@@ -1,0 +1,99 @@
+import java.util.*;
+
+public class Main {
+
+    static int idades[];
+    static int empregados;
+    static int gerencia;
+    static int index[];
+    static List<Integer> gerenciados[];
+
+    public static int dfs(int visitados[], int emp, int inst) {
+
+        int menor = Integer.MAX_VALUE;
+        visitados[emp] = inst;
+
+        for (Integer index : gerenciados[emp])
+            if (visitados[index] < inst) {
+                menor = Math.min(Math.min(menor, idades[index]), dfs(visitados, index, inst));
+            }
+        return menor;
+    }
+
+
+    public static void swap1(int emp1, int emp2){
+
+        int temp = idades[index[emp1]];
+
+        idades[index[emp1]] = idades[index[emp2]];
+        idades[index[emp2]] = temp;
+    }
+
+    public static void swap2(int emp1, int emp2){
+
+        int temp = index[emp1];
+
+        index[emp1] = index[emp2];
+        index[emp2] = temp;
+
+    }
+
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+
+        while(scanner.hasNext()) {
+
+            empregados = scanner.nextInt();
+            gerencia = scanner.nextInt();
+            int intrucoes = scanner.nextInt();
+
+
+            idades = new int[empregados];
+            index = new int[empregados];
+            gerenciados = (List<Integer>[]) new List[empregados];
+            int visitados[] = new int[empregados];
+
+            for (int i = 0; i < empregados; i++) {
+                idades[i] = scanner.nextInt();
+                gerenciados[i] = new LinkedList();
+                visitados[i] = -1;
+                index[i] = i;
+            }
+
+            for (int i = 0; i < gerencia; i++) {
+
+                int gerente = scanner.nextInt() - 1;
+                int subordinado = scanner.nextInt() - 1;
+
+                gerenciados[subordinado].add(gerente);
+            }
+
+
+            for (int i = 0; i < intrucoes; i++) {
+
+                String inst = scanner.next();
+
+                if (inst.equals("T")) {
+
+                    int emp1 = scanner.nextInt() - 1;
+                    int emp2 = scanner.nextInt() - 1;
+
+                    swap1(emp1, emp2);
+                    swap2(emp1, emp2);
+                } else {
+
+                    int emp = scanner.nextInt() - 1;
+
+                    if (gerenciados[index[emp]].isEmpty()) {
+                        System.out.println("*");
+                    } else {
+                        int mais_novo = dfs(visitados, index[emp], i);
+                        System.out.println(mais_novo);
+                    }
+                }
+            }
+        }
+    }
+}
